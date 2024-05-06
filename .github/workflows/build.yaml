@@ -16,3 +16,21 @@ jobs:
 
       - name: Build Project
         run: mvn clean install
+
+  merge:
+    name: Merge Pull Request
+    needs: build
+    runs-on: ubuntu-latest
+    if: success() && github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Merge Pull Request
+        run: |
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.base_ref }}
+          git merge --no-ff --no-edit ${{ github.head_ref }}
+          git push origin ${{ github.base_ref }}
+
