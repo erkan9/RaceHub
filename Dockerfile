@@ -11,4 +11,4 @@ EXPOSE 3000
 RUN ["mvn", "clean", "install"]
 WORKDIR /app/target
 
-CMD ["java", "-jar", "NewsLinker-3.0.0.jar"]
+CMD ["java", "-jar", "RaceHub-3.0.0.jar"]
