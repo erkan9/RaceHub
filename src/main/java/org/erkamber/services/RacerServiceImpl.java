@@ -1,8 +1,8 @@
 package org.erkamber.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.erkamber.configurations.PasswordEncoderConfiguration;
 import org.erkamber.dtos.RacerDTO;
-import org.erkamber.dtos.StatisticDTO;
 import org.erkamber.entities.Racer;
 import org.erkamber.entities.Statistic;
 import org.erkamber.exceptions.ResourceNotFoundException;
@@ -13,6 +13,7 @@ import org.erkamber.services.interfaces.RacerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -20,13 +21,18 @@ import java.util.Optional;
 public class RacerServiceImpl implements RacerService {
 
     private final RacerRepository racerRepository;
+
     private final ModelMapper mapper;
+
+    private final PasswordEncoderConfiguration passwordEncoderConfiguration;
 
     private final StatisticRepository statisticRepository;
 
-    public RacerServiceImpl(RacerRepository racerRepository, ModelMapper mapper, StatisticRepository statisticRepository) {
+    public RacerServiceImpl(RacerRepository racerRepository, ModelMapper mapper,
+                            PasswordEncoderConfiguration passwordEncoderConfiguration, StatisticRepository statisticRepository) {
         this.racerRepository = racerRepository;
         this.mapper = mapper;
+        this.passwordEncoderConfiguration = passwordEncoderConfiguration;
         this.statisticRepository = statisticRepository;
     }
 
@@ -34,6 +40,10 @@ public class RacerServiceImpl implements RacerService {
     public RacerDTO save(RacerRequestDTO newRacer) {
 
         Racer racer = mapper.map(newRacer, Racer.class);
+
+        String encodedUserPassword = passwordEncoderConfiguration.passwordEncoder().encode(racer.getPassword());
+
+        racer.setPassword(encodedUserPassword);
 
         racer = racerRepository.save(racer);
 
@@ -52,18 +62,26 @@ public class RacerServiceImpl implements RacerService {
 
         Racer racer = getRacerById(racerId);
 
-        RacerDTO racerDTO = mapper.map(racer, RacerDTO.class);
-        racerDTO.setRacerStatistics(mapper.map(racer.getStatistic(), StatisticDTO.class));
-
-        return racerDTO;
+        return mapper.map(racer, RacerDTO.class);
     }
 
     @Override
     public RacerDTO getByEmailAndPassword(String email, String password) {
 
-        Racer racer = getRacerByEmailAndPassword(email, password);
+        Racer racer = getLoginUser(email, password);
 
         return mapper.map(racer, RacerDTO.class);
+    }
+
+    private Racer getLoginUser(String userEmail, String password) {
+
+        List<Racer> allUsers = racerRepository.findAll();
+
+        return allUsers.stream()
+                .filter(user -> user.getEmail().equals(userEmail) &&
+                        passwordEncoderConfiguration.passwordEncoder().matches(password, user.getPassword()))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Incorrect email or password!", "User"));
     }
 
     @Override
@@ -109,7 +127,7 @@ public class RacerServiceImpl implements RacerService {
         return mapper.map(racer, RacerDTO.class);
     }
 
-    private Racer getRacerById(long racerId) {
+    Racer getRacerById(long racerId) {
 
         Optional<Racer> optionalRacer = racerRepository.findById(racerId);
 
@@ -117,11 +135,4 @@ public class RacerServiceImpl implements RacerService {
                 new ResourceNotFoundException("Racer not found with id: " + racerId, "Racer"));
     }
 
-    private Racer getRacerByEmailAndPassword(String email, String password) {
-
-        Optional<Racer> optionalRacer = racerRepository.findRacerByEmailAndPassword(email, password);
-
-        return optionalRacer.orElseThrow(() ->
-                new ResourceNotFoundException("Racer not found with email: " + email + " and password: " + password, "Racer"));
-    }
 }

@@ -14,4 +14,6 @@ public interface TrackService {
     List<TrackDTO> getAll();
 
     TrackDTO updateTrack(TrackRequestDTO trackToUpdate, long trackId);
+
+    List<TrackDTO> getByCity(String city);
 }

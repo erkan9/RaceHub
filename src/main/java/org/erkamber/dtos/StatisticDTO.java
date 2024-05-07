@@ -2,6 +2,8 @@ package org.erkamber.dtos;
 
 import lombok.Data;
 
+import java.time.Duration;
+
 @Data
 public class StatisticDTO {
 
@@ -9,7 +11,7 @@ public class StatisticDTO {
 
     private Double drivenKms;
 
-    private Integer drivenTimeMinutes;
+    private Duration drivenTimeMinutes;
 
     private Long racerId;
 }

@@ -19,8 +19,6 @@ public class RacerDTO {
 
     private String email;
 
-    private String password;
-
     private String photo;
 
     private Expertise expertise;

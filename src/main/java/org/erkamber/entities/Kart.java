@@ -32,4 +32,7 @@ public class Kart {
 
     @Column(name = "engine_cc", unique = false, updatable = false, insertable = true, nullable = false)
     private double engineCC;
+
+    @Column(name = "kart_photo", length = 500, unique = false, updatable = true, insertable = true, nullable = false)
+    private String kartPhoto;
 }

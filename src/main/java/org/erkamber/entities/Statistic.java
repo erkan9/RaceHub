@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.Duration;
 
 @Entity
 @Table(name = "statistics")
@@ -24,7 +25,7 @@ public class Statistic {
     private double drivenKms = 0.0;
 
     @Column(name = "driven_time_minutes", updatable = true, insertable = true, nullable = true)
-    private int drivenTimeMinutes = 0;
+    private Duration drivenTimeMinutes = Duration.ZERO;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "racer_id")

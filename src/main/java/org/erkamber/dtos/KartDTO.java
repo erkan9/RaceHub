@@ -14,4 +14,6 @@ public class KartDTO {
     private int kartNumber;
 
     private double engineCC;
+
+    private String kartPhoto;
 }

@@ -79,6 +79,16 @@ public class TrackServiceImpl implements TrackService {
         return mapper.map(track, TrackDTO.class);
     }
 
+    @Override
+    public List<TrackDTO> getByCity(String city) {
+
+        List<Track> tracksByCity = trackRepository.findTrackByCity(city);
+
+        return tracksByCity.stream()
+                .map(track -> mapper.map(track, TrackDTO.class))
+                .collect(Collectors.toList());
+    }
+
     private Track getTrackById(long trackId) {
 
         Optional<Track> optionalTrack = trackRepository.findById(trackId);

@@ -22,7 +22,7 @@ public class Lap {
     @Column(name = "id", unique = true, nullable = false)
     private long lapId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "race_id")
     private Race race;
 
@@ -30,5 +30,5 @@ public class Lap {
 
     private boolean isBestTime;
 
-    private LocalDate lapDate;
+    private LocalDate lapDate = LocalDate.now();
 }

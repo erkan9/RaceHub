@@ -47,9 +47,6 @@ public class Racer {
     @Column(name = "expertise", length = 20)
     private Expertise expertise = Expertise.BEGINNER;
 
-    @OneToOne(mappedBy = "racer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Statistic statistic;
-
     @OneToMany(mappedBy = "racer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Race> races;
 }

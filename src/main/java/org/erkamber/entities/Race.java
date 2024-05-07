@@ -26,7 +26,7 @@ public class Race {
     @JoinColumn(name = "racer_id")
     private Racer racer;
 
-    @OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "race", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Lap> laps;
 
     @ManyToOne
@@ -36,4 +36,11 @@ public class Race {
     @ManyToOne
     @JoinColumn(name = "track_id")
     Track track;
+
+    public Race(Racer racer, List<Lap> laps, Kart raceKart, Track track) {
+        this.racer = racer;
+        this.laps = laps;
+        this.raceKart = raceKart;
+        this.track = track;
+    }
 }
