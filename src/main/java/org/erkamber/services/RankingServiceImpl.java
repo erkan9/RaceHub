@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,18 +59,9 @@ public class RankingServiceImpl implements RankingService {
         for (Racer racer : allRacers) {
             // Find the best lap time for each racer
 
-            List<Race> allRaces = raceRepository.findRaceByRacerAndTrackAndRaceKart(racer, track, kart);
+            Duration bestLapTime = raceRepository.findBestLapTimeByTrackAndKartAndRacer(track, kart, racer);
 
-            Duration bestLapTime = Duration.ZERO;
-
-            for (Race race : allRaces) {
-                for (Lap lap : race.getLaps()) {
-                    Duration lapTime = lap.getLapTime();
-                    if (lapTime.compareTo(bestLapTime) < 0) {
-                        bestLapTime = lapTime;
-                    }
-                }
-            }
+            LocalDate bestLapDate = raceRepository.findBestLapDateByTrackAndKartAndRacer(track, kart, racer);
 
             // Construct BestLapDTO
             RankingDTO bestLapDTO = new RankingDTO();
@@ -77,8 +69,7 @@ public class RankingServiceImpl implements RankingService {
             bestLapDTO.setRacerPhoto(racer.getPhoto());
             bestLapDTO.setRacerFirstName(racer.getFirstName());
             bestLapDTO.setRacerLastName(racer.getLastName());
-            // You may need to find the race date from the bestLaps list or from other source
-            bestLapDTO.setRaceDate(null); // Replace null with actual race date
+            bestLapDTO.setRaceDate(bestLapDate);
             bestLapDTO.setBestTime(bestLapTime);
 
             bestLapDTOs.add(bestLapDTO);
