@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -84,6 +85,34 @@ public class RankingServiceImpl implements RankingService {
         }
 
         return bestLapDTOs;
+    }
+
+    @Override
+    public RankingDTO getBestLastSession(long trackId, long kartId, long racerId) {
+
+        Track track = trackRepository.findById(trackId)
+                .orElseThrow(() -> new EntityNotFoundException("Track with ID " + trackId + " not found"));
+
+        Kart kart = kartRepository.findById(kartId)
+                .orElseThrow(() -> new EntityNotFoundException("Kart with ID " + kartId + " not found"));
+
+        Optional<Racer> optionalRacer = racerRepository.findById(racerId);
+
+        Racer racer = optionalRacer.get();
+
+        Duration lastRaceBestLapTime = raceRepository.findBestLapTimeForLastRaceByTrackAndKartAndRacer(track, kart, racer);
+
+        LocalDate lastRaceDate = raceRepository.findLastRaceDateByTrackAndKartAndRacer(track, kart, racer);
+
+        RankingDTO lastRace = new RankingDTO();
+        lastRace.setPosition(0);
+        lastRace.setRacerPhoto(racer.getPhoto());
+        lastRace.setRacerFirstName(racer.getFirstName());
+        lastRace.setRacerLastName(racer.getLastName());
+        lastRace.setRaceDate(lastRaceDate);
+        lastRace.setBestTime(lastRaceBestLapTime);
+
+        return lastRace;
     }
 
 }

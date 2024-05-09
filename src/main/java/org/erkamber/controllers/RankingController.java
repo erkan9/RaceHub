@@ -27,4 +27,13 @@ public class RankingController {
         List<RankingDTO> bestLapDTOs = rankingService.getRankingByLapAndKart(trackId, kartId);
         return ResponseEntity.ok(bestLapDTOs);
     }
+
+    @GetMapping("/best-last-session")
+    public ResponseEntity<RankingDTO> getBestLastSession(
+            @RequestParam("trackId") long trackId,
+            @RequestParam("kartId") long kartId,
+            @RequestParam("racerId") long racerId) {
+        RankingDTO bestLastSession = rankingService.getBestLastSession(trackId, kartId, racerId);
+        return ResponseEntity.ok(bestLastSession);
+    }
 }
