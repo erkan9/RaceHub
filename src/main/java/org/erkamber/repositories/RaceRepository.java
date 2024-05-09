@@ -32,6 +32,21 @@ public interface RaceRepository extends JpaRepository<Race, Long> {
     LocalDate findBestLapDateByTrackAndKartAndRacer(@Param("track") Track track,
                                                     @Param("kart") Kart kart,
                                                     @Param("racer") Racer racer);
+
+    @Query("SELECT MIN(l.lapTime) FROM Race r " +
+            "JOIN r.laps l " +
+            "WHERE r.track = :track AND r.raceKart = :kart AND r.racer = :racer " +
+            "AND r IN (SELECT MAX(r1) FROM Race r1 WHERE r1.racer = :racer)")
+    Duration findBestLapTimeForLastRaceByTrackAndKartAndRacer(@Param("track") Track track,
+                                                              @Param("kart") Kart kart,
+                                                              @Param("racer") Racer racer);
+
+    @Query("SELECT MAX(lap.lapDate) FROM Race race " +
+            "JOIN race.laps lap " +
+            "WHERE race.track = :track AND race.raceKart = :kart AND race.racer = :racer")
+    LocalDate findLastRaceDateByTrackAndKartAndRacer(@Param("track") Track track,
+                                                     @Param("kart") Kart kart,
+                                                     @Param("racer") Racer racer);
     List<Race> findRaceByRacer(Racer racer);
 
 }
