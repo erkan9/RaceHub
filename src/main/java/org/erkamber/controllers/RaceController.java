@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/races")
 @CrossOrigin(origins = {"http://localhost:3000", "replace with remote id"})
@@ -27,5 +29,25 @@ public class RaceController {
 
         // Return the saved race in the response body with HTTP status 201 (Created)
         return new ResponseEntity<>(savedRace, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{raceId}")
+    public RaceDTO getRaceById(@PathVariable long raceId) {
+        return raceService.getById(raceId);
+    }
+
+    @GetMapping("/racer/{racerId}")
+    public List<RaceDTO> getRacesByUserId(@PathVariable long racerId) {
+        return raceService.getByUserId(racerId);
+    }
+
+    @DeleteMapping("/racer/{racerId}")
+    public List<RaceDTO> deleteUserRaces(@PathVariable long racerId) {
+        return raceService.deleteUserRaces(racerId);
+    }
+
+    @DeleteMapping("/{raceId}")
+    public RaceDTO deleteRaceById(@PathVariable long raceId) {
+        return raceService.deleteById(raceId);
     }
 }

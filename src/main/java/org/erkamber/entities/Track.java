@@ -35,8 +35,8 @@ public class Track {
     @Column(name = "best_track_time", unique = false, updatable = true, insertable = true, nullable = false)
     private Duration bestTrackTime;
 
-    @OneToMany(mappedBy = "track", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Race> races;
+   // @OneToMany(mappedBy = "track", orphanRemoval = true, fetch = FetchType.LAZY)
+   // private List<Race> races;
 
     @Column(name = "track_photo", length = 500, unique = false, updatable = true, insertable = true, nullable = true)
     private String trackPhoto;

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,10 +60,46 @@ public class RaceServiceImpl implements RaceService {
         updateRacerExpertise(racer);
 
         Race race = createRace(racer, raceLaps, findKartOrThrow(newRace.getKartId()), track);
-        race.setLaps(raceLaps);
         raceRepository.save(race);
 
+        raceLaps.forEach(laps -> laps.setRace(race));
+
+        lapRepository.saveAll(raceLaps);
+
         return mapToRaceDTO(race);
+    }
+
+    @Override
+    public RaceDTO getById(long raceID) {
+        Optional<Race> races = raceRepository.findById(raceID);
+
+        return mapper.map(races.get(), RaceDTO.class);
+    }
+
+    @Override
+    public List<RaceDTO> getByUserId(long racerId) {
+        List<Race> races = raceRepository.findRaceByRacer(racerRepository.findById(racerId).get());
+
+        return mapToRaceDtoList(races);
+    }
+
+    @Override
+    public List<RaceDTO> deleteUserRaces(long racerId) {
+        List<Race> races = raceRepository.findRaceByRacer(racerRepository.findById(racerId).get());
+        raceRepository.deleteAll(races);
+        return mapToRaceDtoList(races);
+    }
+
+    @Override
+    public RaceDTO deleteById(long raceId) {
+        Optional<Race> raceOptional = raceRepository.findById(raceId);
+        if (raceOptional.isPresent()) {
+            Race race = raceOptional.get();
+            raceRepository.deleteById(raceId);
+            return mapper.map(race, RaceDTO.class);
+        } else {
+            return null; // Or throw an exception indicating that the race with the given ID doesn't exist
+        }
     }
 
     private Racer findRacerOrThrow(long racerId) {
@@ -113,6 +150,8 @@ public class RaceServiceImpl implements RaceService {
                     //TODO: Send Email
                     track.setBestTrackTime(lapTime);
                 });
+
+        trackRepository.save(track);
     }
 
     private void updateRacerExpertise(Racer racer) {
@@ -139,32 +178,17 @@ public class RaceServiceImpl implements RaceService {
         return raceDTO;
     }
 
-
-    @Override
-    public RaceDTO getById(long raceID) {
-        return null;
-    }
-
-    @Override
-    public List<RaceDTO> getByUserId(long userId) {
-        return null;
-    }
-
-    @Override
-    public List<RaceDTO> deleteUserRaces(long userId) {
-        return null;
-    }
-
-    @Override
-    public RaceDTO deleteById(long raceId) {
-        return null;
-    }
-
     private List<Lap> mapToDtoList(List<LapRequestDTO> laps) {
 
         return laps.stream()
                 .map(lap -> mapper.map(lap, Lap.class))
                 .collect(Collectors.toList());
+    }
 
+    private List<RaceDTO> mapToRaceDtoList(List<Race> races) {
+
+        return races.stream()
+                .map(lap -> mapper.map(lap, RaceDTO.class))
+                .collect(Collectors.toList());
     }
 }

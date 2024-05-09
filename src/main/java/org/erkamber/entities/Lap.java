@@ -22,7 +22,7 @@ public class Lap {
     @Column(name = "id", unique = true, nullable = false)
     private long lapId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "race_id")
     private Race race;
 
