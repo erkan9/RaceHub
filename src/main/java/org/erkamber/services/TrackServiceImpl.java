@@ -2,8 +2,12 @@ package org.erkamber.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.dtos.TrackDTO;
+import org.erkamber.entities.Race;
+import org.erkamber.entities.Racer;
 import org.erkamber.entities.Track;
 import org.erkamber.exceptions.ResourceNotFoundException;
+import org.erkamber.repositories.RaceRepository;
+import org.erkamber.repositories.RacerRepository;
 import org.erkamber.repositories.TrackRepository;
 import org.erkamber.requestDtos.TrackRequestDTO;
 import org.erkamber.services.interfaces.TrackService;
@@ -11,7 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,10 +26,17 @@ import java.util.stream.Collectors;
 public class TrackServiceImpl implements TrackService {
 
     private final TrackRepository trackRepository;
+
+    private final RacerRepository racerRepository;
+
+    private final RaceRepository raceRepository;
+
     private final ModelMapper mapper;
 
-    public TrackServiceImpl(TrackRepository trackRepository, ModelMapper mapper) {
+    public TrackServiceImpl(TrackRepository trackRepository, RacerRepository racerRepository, RaceRepository raceRepository, ModelMapper mapper) {
         this.trackRepository = trackRepository;
+        this.racerRepository = racerRepository;
+        this.raceRepository = raceRepository;
         this.mapper = mapper;
     }
 
@@ -43,6 +56,17 @@ public class TrackServiceImpl implements TrackService {
         Track track = getTrackById(trackId);
 
         return mapper.map(track, TrackDTO.class);
+    }
+
+    @Override
+    public TrackDTO findMostPreferredTrackForRacer(long racerId) {
+
+        Optional<Racer> racer = racerRepository.findById(racerId);
+
+        List<Race> allRaces = raceRepository.findRaceByRacer(racer.get());
+
+        return null;
+        //TODO FINISH
     }
 
     @Override

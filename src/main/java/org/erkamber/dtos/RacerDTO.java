@@ -24,6 +24,4 @@ public class RacerDTO {
     private Expertise expertise;
 
     private StatisticDTO racerStatistics;
-
-    //TODO add racesDto as list
 }

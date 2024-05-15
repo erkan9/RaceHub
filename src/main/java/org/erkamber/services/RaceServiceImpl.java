@@ -3,6 +3,7 @@ package org.erkamber.services;
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.dtos.RaceDTO;
 import org.erkamber.dtos.StatisticDTO;
+import org.erkamber.dtos.TrackDTO;
 import org.erkamber.entities.*;
 import org.erkamber.enums.Expertise;
 import org.erkamber.exceptions.ResourceNotFoundException;
@@ -70,10 +71,28 @@ public class RaceServiceImpl implements RaceService {
     }
 
     @Override
-    public RaceDTO getById(long raceID) {
-        Optional<Race> races = raceRepository.findById(raceID);
+    public RaceDTO getById(long raceId) {
+        Optional<Race> races = raceRepository.findById(raceId);
 
         return mapper.map(races.get(), RaceDTO.class);
+    }
+
+    @Override
+    public List<RaceDTO> getAllRaces() {
+
+        List<Race> allRaces = raceRepository.findAll();
+
+        return mapToRaceDtoList(allRaces);
+    }
+
+    @Override
+    public RaceDTO getLastRaceOfRacer(long racerId) {
+
+        Racer racer = findRacerOrThrow(racerId);
+
+        Optional<Race> lastRace = raceRepository.findFirstByRacerOrderByLapsLapDateDesc(racer);
+
+        return mapper.map(lastRace.get(), RaceDTO.class);
     }
 
     @Override

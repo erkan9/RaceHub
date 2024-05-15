@@ -11,6 +11,8 @@ public interface TrackService {
 
     TrackDTO getById(long trackId);
 
+    TrackDTO findMostPreferredTrackForRacer(long racerId);
+
     List<TrackDTO> getAll();
 
     TrackDTO updateTrack(TrackRequestDTO trackToUpdate, long trackId);

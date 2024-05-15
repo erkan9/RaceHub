@@ -42,6 +42,12 @@ public class TrackController {
         return ResponseEntity.ok(tracks);
     }
 
+    @GetMapping("/preferred-track/{racerId}")
+    public ResponseEntity<TrackDTO> getMostPreferredTrack(@PathVariable long racerId) {
+        TrackDTO preferredTrack = trackService.findMostPreferredTrackForRacer(racerId);
+        return ResponseEntity.ok(preferredTrack);
+    }
+
     @PatchMapping("/{trackId}")
     public ResponseEntity<TrackDTO> updateTrack(@RequestBody TrackRequestDTO trackToUpdate, @PathVariable long trackId) {
         TrackDTO updatedTrack = trackService.updateTrack(trackToUpdate, trackId);

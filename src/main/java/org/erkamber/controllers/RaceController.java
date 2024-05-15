@@ -36,6 +36,18 @@ public class RaceController {
         return raceService.getById(raceId);
     }
 
+    @GetMapping("/last/{racerId}")
+    public ResponseEntity<RaceDTO> getLastRaceOfRacer(@PathVariable long racerId) {
+        RaceDTO lastRace = raceService.getLastRaceOfRacer(racerId);
+        return ResponseEntity.ok(lastRace);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RaceDTO>> getAllRaces() {
+        List<RaceDTO> raceDTOs = raceService.getAllRaces();
+        return ResponseEntity.ok(raceDTOs);
+    }
+
     @GetMapping("/racer/{racerId}")
     public List<RaceDTO> getRacesByUserId(@PathVariable long racerId) {
         return raceService.getByUserId(racerId);

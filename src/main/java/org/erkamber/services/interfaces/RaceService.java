@@ -9,7 +9,11 @@ public interface RaceService {
 
     RaceDTO save(RaceRequestDTO newRace);
 
-    RaceDTO getById(long raceID);
+    RaceDTO getById(long raceId);
+
+    List<RaceDTO> getAllRaces();
+
+    RaceDTO getLastRaceOfRacer(long racerId);
 
     List<RaceDTO> getByUserId(long racerId);
 

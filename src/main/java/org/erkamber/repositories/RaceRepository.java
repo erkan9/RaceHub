@@ -10,12 +10,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.TypedQuery;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RaceRepository extends JpaRepository<Race, Long> {
+
+    Optional<Race> findFirstByRacerOrderByLapsLapDateDesc(Racer racer);
 
     List<Race> findRaceByRacerAndTrackAndRaceKart(Racer racer, Track track, Kart kart);
 
