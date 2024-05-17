@@ -16,3 +16,9 @@ jobs:
 
       - name: Build Project
         run: mvn clean install
+
+      - name: Deploy to Render
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{}' "$RENDER_DEPLOY_URL"
+        env:
+          RENDER_DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_URL }}

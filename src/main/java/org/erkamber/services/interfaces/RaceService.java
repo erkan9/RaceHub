@@ -15,9 +15,9 @@ public interface RaceService {
 
     RaceDTO getLastRaceOfRacer(long racerId);
 
-    List<RaceDTO> getByUserId(long racerId);
+    List<RaceDTO> getByRacerId(long racerId);
 
-    List<RaceDTO> deleteUserRaces(long racerId);
+    List<RaceDTO> deleteRacerRaces(long racerId);
 
     RaceDTO deleteById(long raceId);
 }

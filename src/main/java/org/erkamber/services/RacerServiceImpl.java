@@ -41,9 +41,9 @@ public class RacerServiceImpl implements RacerService {
 
         Racer racer = mapper.map(newRacer, Racer.class);
 
-        String encodedUserPassword = passwordEncoderConfiguration.passwordEncoder().encode(racer.getPassword());
+        String encodedRacerPassword = passwordEncoderConfiguration.passwordEncoder().encode(racer.getPassword());
 
-        racer.setPassword(encodedUserPassword);
+        racer.setPassword(encodedRacerPassword);
 
         racer = racerRepository.save(racer);
 
@@ -66,22 +66,33 @@ public class RacerServiceImpl implements RacerService {
     }
 
     @Override
-    public RacerDTO getByEmailAndPassword(String email, String password) {
+    public RacerDTO getByEmail(String racerEmail) {
 
-        Racer racer = getLoginUser(email, password);
+        Optional<Racer> optionalRacer = racerRepository.findRacerByEmail(racerEmail);
+
+        Racer racer = optionalRacer.orElseThrow(() ->
+                new ResourceNotFoundException("Racer not found with email: " + racerEmail, "Racer"));
 
         return mapper.map(racer, RacerDTO.class);
     }
 
-    private Racer getLoginUser(String userEmail, String password) {
+    @Override
+    public RacerDTO getByEmailAndPassword(String email, String password) {
 
-        List<Racer> allUsers = racerRepository.findAll();
+        Racer racer = getLoginRacer(email, password);
 
-        return allUsers.stream()
-                .filter(user -> user.getEmail().equals(userEmail) &&
-                        passwordEncoderConfiguration.passwordEncoder().matches(password, user.getPassword()))
+        return mapper.map(racer, RacerDTO.class);
+    }
+
+    private Racer getLoginRacer(String racerEmail, String password) {
+
+        List<Racer> allRacers = racerRepository.findAll();
+
+        return allRacers.stream()
+                .filter(racer -> racer.getEmail().equals(racerEmail) &&
+                        passwordEncoderConfiguration.passwordEncoder().matches(password, racer.getPassword()))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Incorrect email or password!", "User"));
+                .orElseThrow(() -> new ResourceNotFoundException("Incorrect email or password!", "Racer"));
     }
 
     @Override

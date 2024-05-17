@@ -3,17 +3,18 @@ package org.erkamber.services;
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.dtos.RaceDTO;
 import org.erkamber.dtos.StatisticDTO;
-import org.erkamber.dtos.TrackDTO;
 import org.erkamber.entities.*;
 import org.erkamber.enums.Expertise;
 import org.erkamber.exceptions.ResourceNotFoundException;
 import org.erkamber.repositories.*;
 import org.erkamber.requestDtos.LapRequestDTO;
 import org.erkamber.requestDtos.RaceRequestDTO;
+import org.erkamber.services.interfaces.EmailService;
 import org.erkamber.services.interfaces.RaceService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.util.List;
@@ -37,10 +38,12 @@ public class RaceServiceImpl implements RaceService {
 
     private final LapRepository lapRepository;
 
+    private EmailService emailService;
+
     public RaceServiceImpl(RaceRepository raceRepository, ModelMapper mapper, RacerRepository racerRepository,
                            StatisticRepository statisticRepository, LapRepository lapRepository,
                            TrackRepository trackRepository,
-                           KartRepository kartRepository) {
+                           KartRepository kartRepository, EmailService emailService) {
         this.raceRepository = raceRepository;
         this.mapper = mapper;
         this.racerRepository = racerRepository;
@@ -48,6 +51,7 @@ public class RaceServiceImpl implements RaceService {
         this.lapRepository = lapRepository;
         this.trackRepository = trackRepository;
         this.kartRepository = kartRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -96,14 +100,14 @@ public class RaceServiceImpl implements RaceService {
     }
 
     @Override
-    public List<RaceDTO> getByUserId(long racerId) {
+    public List<RaceDTO> getByRacerId(long racerId) {
         List<Race> races = raceRepository.findRaceByRacer(racerRepository.findById(racerId).get());
 
         return mapToRaceDtoList(races);
     }
 
     @Override
-    public List<RaceDTO> deleteUserRaces(long racerId) {
+    public List<RaceDTO> deleteRacerRaces(long racerId) {
         List<Race> races = raceRepository.findRaceByRacer(racerRepository.findById(racerId).get());
         raceRepository.deleteAll(races);
         return mapToRaceDtoList(races);
@@ -145,7 +149,7 @@ public class RaceServiceImpl implements RaceService {
         Duration totalLapTime = calculateTotalLapTime(raceLaps);
         statistic.setDrivenTimeMinutes(statistic.getDrivenTimeMinutes().plus(totalLapTime));
 
-        updateBestLapTime(track, raceLaps);
+        updateBestLapTime(racer, track, raceLaps);
         statisticRepository.save(statistic);
     }
 
@@ -159,14 +163,18 @@ public class RaceServiceImpl implements RaceService {
                 .reduce(Duration.ZERO, Duration::plus);
     }
 
-    private void updateBestLapTime(Track track, List<Lap> raceLaps) {
+    private void updateBestLapTime(Racer racer, Track track, List<Lap> raceLaps) {
         Duration bestTrackTime = track.getBestTrackTime();
         raceLaps.stream()
                 .map(Lap::getLapTime)
                 .filter(lapTime -> lapTime.compareTo(bestTrackTime) < 0)
                 .findFirst()
                 .ifPresent(lapTime -> {
-                    //TODO: Send Email
+                    try {
+                        emailService.sendEmail(racer.getFirstName(), racer.getLastName(), track.getTrackName(), racer.getEmail(), lapTime.toString());
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    }
                     track.setBestTrackTime(lapTime);
                 });
 

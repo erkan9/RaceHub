@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.mail.MessagingException;
+
 
 @RestControllerAdvice
 @Slf4j
@@ -16,5 +18,11 @@ public class MyExceptionHandler {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException exception) {
         log.error("Error occurred", new RuntimeException("Planned"));
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<String> handleMessagingException(MessagingException exception) {
+        log.error("Caught exception: ", exception);
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

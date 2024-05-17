@@ -15,9 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,15 +58,42 @@ public class TrackServiceImpl implements TrackService {
         return mapper.map(track, TrackDTO.class);
     }
 
+
     @Override
     public TrackDTO findMostPreferredTrackForRacer(long racerId) {
+        // Retrieve the racer by ID
+        Optional<Racer> racerOptional = racerRepository.findById(racerId);
+        if (!racerOptional.isPresent()) {
+            // Handle the case where the racer is not found
+            throw new NoSuchElementException("Racer not found with ID: " + racerId);
+        }
 
-        Optional<Racer> racer = racerRepository.findById(racerId);
+        Racer racer = racerOptional.get();
 
-        List<Race> allRaces = raceRepository.findRaceByRacer(racer.get());
+        // Retrieve all races for the given racer
+        List<Race> allRaces = raceRepository.findRaceByRacer(racer);
 
-        return null;
-        //TODO FINISH
+        if (allRaces.isEmpty()) {
+            // Handle the case where the racer has no races
+            return null; // Or throw an exception, or return a default value
+        }
+
+        // Count the frequency of each track ID
+        Map<Long, Long> trackFrequency = allRaces.stream()
+                .collect(Collectors.groupingBy(race -> race.getTrack().getTrackId(), Collectors.counting()));
+
+        // Find the track ID with the highest frequency
+        long mostPreferredTrackId = trackFrequency.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .get()
+                .getKey();
+
+        // Retrieve the most preferred track
+        Track mostPreferredTrack = trackRepository.findById(mostPreferredTrackId)
+                .orElseThrow(() -> new NoSuchElementException("Track not found with ID: " + mostPreferredTrackId));
+
+        // Convert the Track entity to a TrackDTO
+       return mapper.map(mostPreferredTrack, TrackDTO.class);
     }
 
     @Override

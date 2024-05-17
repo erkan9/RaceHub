@@ -9,6 +9,8 @@ public interface RacerService {
 
     RacerDTO getById(long racerId);
 
+    RacerDTO getByEmail(String racerEmail);
+
     RacerDTO getByEmailAndPassword(String email, String password);
 
     RacerDTO deleteById(long racerId);

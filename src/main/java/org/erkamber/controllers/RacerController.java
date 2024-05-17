@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/racers")
-@CrossOrigin(origins = {"http://localhost:3000", "replace with remote id"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://racing-app-amber.vercel.app"})
 @Validated
 public class RacerController {
 
@@ -44,6 +44,12 @@ public class RacerController {
     public ResponseEntity<RacerDTO> getRacerByEmailAndPassword(@RequestParam String email, @RequestParam String password) {
         RacerDTO racer = racerService.getByEmailAndPassword(email, password);
         return ResponseEntity.ok(racer);
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<RacerDTO> getRacerByEmail(@RequestParam String email) {
+        RacerDTO racerDTO = racerService.getByEmail(email);
+        return ResponseEntity.ok(racerDTO);
     }
 
     @DeleteMapping("/{racerId}")

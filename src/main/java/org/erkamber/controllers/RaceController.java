@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/races")
-@CrossOrigin(origins = {"http://localhost:3000", "replace with remote id"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://racing-app-amber.vercel.app"})
 @Validated
 public class RaceController {
 
@@ -49,13 +49,13 @@ public class RaceController {
     }
 
     @GetMapping("/racer/{racerId}")
-    public List<RaceDTO> getRacesByUserId(@PathVariable long racerId) {
-        return raceService.getByUserId(racerId);
+    public List<RaceDTO> getRacesByRacerId(@PathVariable long racerId) {
+        return raceService.getByRacerId(racerId);
     }
 
     @DeleteMapping("/racer/{racerId}")
-    public List<RaceDTO> deleteUserRaces(@PathVariable long racerId) {
-        return raceService.deleteUserRaces(racerId);
+    public List<RaceDTO> deleteRacerRaces(@PathVariable long racerId) {
+        return raceService.deleteRacerRaces(racerId);
     }
 
     @DeleteMapping("/{raceId}")
