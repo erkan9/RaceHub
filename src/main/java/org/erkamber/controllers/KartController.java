@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/karts")
-@CrossOrigin(origins = {"http://localhost:3000", "https://racing-app-amber.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://racing-o1k9wb1o4-codingwebdevelopers-projects.vercel.app"})
 @Validated
 public class KartController {
 
