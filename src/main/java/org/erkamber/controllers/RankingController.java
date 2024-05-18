@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/ranking")
-@CrossOrigin(origins = {"http://localhost:3000", "https://racing-o1k9wb1o4-codingwebdevelopers-projects.vercel.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "racing-app-amber.vercel.app"})
 @Validated
 public class RankingController {
 
