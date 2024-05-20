@@ -3,6 +3,7 @@ package org.erkamber.services;
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.configurations.PasswordEncoderConfiguration;
 import org.erkamber.dtos.RacerDTO;
+import org.erkamber.dtos.StatisticDTO;
 import org.erkamber.entities.Racer;
 import org.erkamber.entities.Statistic;
 import org.erkamber.exceptions.ResourceNotFoundException;
@@ -62,7 +63,13 @@ public class RacerServiceImpl implements RacerService {
 
         Racer racer = getRacerById(racerId);
 
-        return mapper.map(racer, RacerDTO.class);
+        Statistic statistic = statisticRepository.findStatisticByRacer(racer);
+
+        RacerDTO racerDTO = mapper.map(racer, RacerDTO.class);
+
+        racerDTO.setRacerStatistics(mapper.map(statistic, StatisticDTO.class));
+
+        return racerDTO;
     }
 
     @Override
