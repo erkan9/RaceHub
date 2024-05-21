@@ -59,25 +59,27 @@ public class RankingServiceImpl implements RankingService {
 
         for (Racer racer : allRacers) {
             // Find the best lap time for each racer
-
             Duration bestLapTime = raceRepository.findBestLapTimeByTrackAndKartAndRacer(track, kart, racer);
-
             LocalDate bestLapDate = raceRepository.findBestLapDateByTrackAndKartAndRacer(track, kart, racer);
 
-            // Construct BestLapDTO
-            RankingDTO bestLapDTO = new RankingDTO();
-            bestLapDTO.setPosition(0);
-            bestLapDTO.setRacerPhoto(racer.getPhoto());
-            bestLapDTO.setRacerFirstName(racer.getFirstName());
-            bestLapDTO.setRacerLastName(racer.getLastName());
-            bestLapDTO.setRaceDate(bestLapDate);
-            bestLapDTO.setBestTime(bestLapTime);
+            if (bestLapTime != null && bestLapDate != null) {
+                // Construct RankingDTO
+                RankingDTO bestLapDTO = new RankingDTO();
+                bestLapDTO.setPosition(0);
+                bestLapDTO.setRacerPhoto(racer.getPhoto());
+                bestLapDTO.setRacerFirstName(racer.getFirstName());
+                bestLapDTO.setRacerLastName(racer.getLastName());
+                bestLapDTO.setRaceDate(bestLapDate);
+                bestLapDTO.setBestTime(bestLapTime);
 
-            bestLapDTOs.add(bestLapDTO);
+                bestLapDTOs.add(bestLapDTO);
+            }
+        }
 
-            bestLapDTOs.sort(Comparator.comparing(RankingDTO::getBestTime));
+        // Sort and set positions if bestLapDTOs is not empty
+        if (!bestLapDTOs.isEmpty()) {
+            bestLapDTOs.sort(Comparator.comparing(RankingDTO::getBestTime, Comparator.nullsLast(Comparator.naturalOrder())));
 
-            // Set positions based on sorted list
             int position = 1;
             for (RankingDTO dto : bestLapDTOs) {
                 dto.setPosition(position++);
@@ -86,6 +88,7 @@ public class RankingServiceImpl implements RankingService {
 
         return bestLapDTOs;
     }
+
 
     @Override
     public RankingDTO getBestLastSession(long trackId, long kartId, long racerId) {
