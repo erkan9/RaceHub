@@ -31,22 +31,12 @@ RaceHub is a web application designed as a centralized platform for kart racing 
    - Create a database named `racehub`.
    - Configure the database connection settings in `application.properties`.
 
-5. Set Up Environment Variables:
-   - Set the following environment variables in your system:
-     ```properties
-     ENVIRONMENT_LOCAL=local
-     NEWSLINKER_EMAIL_HOST=<your_email_host>
-     NEWSLINKER_EMAIL_PORT=<your_email_port>
-     NEWSLINKER_EMAIL=<your_email_address>
-     NEWSLINKER_EMAIL_PASS=<your_email_password>
-     ```
-
-6. Run the Application:
+5. Run the Application:
    ```bash
    java -jar -Dserver.port=3000 target/RaceHub-3.0.0.jar
    ```
 
-7. Access the Website:
+6. Access the Website:
    Navigate to `http://localhost:3000` in your web browser.
 
 ### Usage
