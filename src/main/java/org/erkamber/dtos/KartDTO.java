@@ -17,6 +17,9 @@ public class KartDTO {
 
     private String kartPhoto;
 
+    public KartDTO() {
+    }
+
     public KartDTO(long kartId, String model) {
         this.kartId = kartId;
         this.model = model;

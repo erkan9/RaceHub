@@ -63,8 +63,8 @@ public class KartServiceImpl implements KartService {
         if (updateKart.getModel() != null && !updateKart.getModel().isEmpty()) {
             kart.setModel(updateKart.getModel());
         }
-        if (updateKart.getModel() != null && !updateKart.getModel().isEmpty()) {
-            kart.setModel(updateKart.getModel());
+        if (updateKart.getKartPhoto() != null && !updateKart.getKartPhoto().isEmpty()) {
+            kart.setKartPhoto(updateKart.getKartPhoto());
         }
         if (updateKart.getHorsePower() > 0) {
             kart.setHorsePower(updateKart.getHorsePower());

@@ -3,6 +3,8 @@ package org.erkamber.services.interfaces;
 import org.erkamber.dtos.RacerDTO;
 import org.erkamber.requestDtos.RacerRequestDTO;
 
+import java.util.List;
+
 public interface RacerService {
 
     RacerDTO save(RacerRequestDTO newRacer);
@@ -16,4 +18,6 @@ public interface RacerService {
     RacerDTO deleteById(long racerId);
 
     RacerDTO update(RacerRequestDTO updateRacer, long racerId);
+
+    List<RacerDTO> getAll();
 }

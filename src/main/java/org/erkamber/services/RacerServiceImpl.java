@@ -2,8 +2,10 @@ package org.erkamber.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.configurations.PasswordEncoderConfiguration;
+import org.erkamber.dtos.RaceDTO;
 import org.erkamber.dtos.RacerDTO;
 import org.erkamber.dtos.StatisticDTO;
+import org.erkamber.entities.Race;
 import org.erkamber.entities.Racer;
 import org.erkamber.entities.Statistic;
 import org.erkamber.exceptions.ResourceNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -117,7 +120,6 @@ public class RacerServiceImpl implements RacerService {
 
         Racer racer = getRacerById(racerId);
 
-
         if (updateRacer.getFirstName() != null) {
             racer.setFirstName(updateRacer.getFirstName());
         }
@@ -145,12 +147,27 @@ public class RacerServiceImpl implements RacerService {
         return mapper.map(racer, RacerDTO.class);
     }
 
+    @Override
+    public List<RacerDTO> getAll() {
+
+        List<Racer> allRacers = racerRepository.findAll();
+
+        return mapToRacerDtoList(allRacers);
+    }
+
     Racer getRacerById(long racerId) {
 
         Optional<Racer> optionalRacer = racerRepository.findById(racerId);
 
         return optionalRacer.orElseThrow(() ->
                 new ResourceNotFoundException("Racer not found with id: " + racerId, "Racer"));
+    }
+
+    private List<RacerDTO> mapToRacerDtoList(List<Racer> racers) {
+
+        return racers.stream()
+                .map(lap -> mapper.map(lap, RacerDTO.class))
+                .collect(Collectors.toList());
     }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/racers")
 @CrossOrigin(origins = {"http://localhost:3000", "https://racing-app-amber.vercel.app"})
@@ -32,6 +34,12 @@ public class RacerController {
                 .status(HttpStatus.CREATED)
                 .headers(headers)
                 .body(savedRacer);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RacerDTO>> getAllRacers() {
+        List<RacerDTO> racerDTOs = racerService.getAll();
+        return ResponseEntity.ok(racerDTOs);
     }
 
     @GetMapping("/{racerId}")

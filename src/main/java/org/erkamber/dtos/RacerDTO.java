@@ -25,6 +25,9 @@ public class RacerDTO {
 
     private StatisticDTO racerStatistics;
 
+    public RacerDTO() {
+    }
+
     public RacerDTO(long racerId, String firstName, String lastName, String city, String ageRange, String email, String photo, Expertise expertise) {
         this.racerId = racerId;
         this.firstName = firstName;
