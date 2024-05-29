@@ -40,7 +40,7 @@ public class Racer {
     @Column(name = "password", length = 500, nullable = false)
     private String password;
 
-    @Column(name = "photo", length = 255)
+    @Column(name = "photo", length = 1000)
     private String photo;
 
     @Enumerated(EnumType.STRING)
@@ -49,4 +49,23 @@ public class Racer {
 
     @OneToMany(mappedBy = "racer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Race> races;
+
+    public Racer(long racerId, String firstName, String lastName, String photo) {
+        this.racerId = racerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.photo = photo;
+    }
+
+    public Racer(long racerId, String firstName, String lastName, String city, String ageRange, String email, String password, String photo, Expertise expertise) {
+        this.racerId = racerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.ageRange = ageRange;
+        this.email = email;
+        this.password = password;
+        this.photo = photo;
+        this.expertise = expertise;
+    }
 }

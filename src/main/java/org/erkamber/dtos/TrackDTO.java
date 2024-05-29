@@ -19,4 +19,14 @@ public class TrackDTO {
     private Duration bestTrackTime;
 
     private String trackPhoto;
+
+    public TrackDTO() {
+    }
+
+    public TrackDTO(long trackId, String trackName, Duration bestTrackTime, double trackLengthKms) {
+        this.trackId = trackId;
+        this.trackName = trackName;
+        this.trackLengthKms = trackLengthKms;
+        this.bestTrackTime = bestTrackTime;
+    }
 }

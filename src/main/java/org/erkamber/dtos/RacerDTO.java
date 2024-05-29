@@ -24,4 +24,15 @@ public class RacerDTO {
     private Expertise expertise;
 
     private StatisticDTO racerStatistics;
+
+    public RacerDTO(long racerId, String firstName, String lastName, String city, String ageRange, String email, String photo, Expertise expertise) {
+        this.racerId = racerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.ageRange = ageRange;
+        this.email = email;
+        this.photo = photo;
+        this.expertise = expertise;
+    }
 }

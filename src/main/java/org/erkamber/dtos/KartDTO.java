@@ -16,4 +16,9 @@ public class KartDTO {
     private double engineCC;
 
     private String kartPhoto;
+
+    public KartDTO(long kartId, String model) {
+        this.kartId = kartId;
+        this.model = model;
+    }
 }
