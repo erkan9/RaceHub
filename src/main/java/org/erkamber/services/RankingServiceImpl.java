@@ -2,7 +2,9 @@ package org.erkamber.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.erkamber.dtos.RankingDTO;
-import org.erkamber.entities.*;
+import org.erkamber.entities.Kart;
+import org.erkamber.entities.Racer;
+import org.erkamber.entities.Track;
 import org.erkamber.repositories.*;
 import org.erkamber.services.interfaces.RankingService;
 import org.modelmapper.ModelMapper;
